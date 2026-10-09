@@ -99,6 +99,10 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .smoke { position: absolute; left: .02em; bottom: .26em; width: .26em; height: .26em; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #DDE4EE); opacity: 0; }
 .car.engine .smoke { animation: puff 2.2s ease-out infinite; }
 .car.engine .car-body { background: linear-gradient(160deg, var(--ask-hi), var(--ask)); color: #fff; text-shadow: 1px 2px 0 var(--ask-press); box-shadow: inset 2px 2px 0 rgba(255,255,255,.4), 0 .09em 0 var(--ask-press), .05em .14em .25em rgba(194,73,27,.35), .1em .35em .6em rgba(52,64,90,.12); }
+.last-group { display: flex; gap: .42em; flex: none; }
+.car.proper .car-body { background: linear-gradient(160deg, #FFE59A, var(--gold)); color: #5B4300; text-shadow: 1px 1px 0 rgba(255,255,255,.5); box-shadow: inset 2px 2px 0 rgba(255,255,255,.6), 0 .09em 0 var(--gold-press), .05em .14em .25em rgba(217,154,0,.3), .1em .35em .6em rgba(52,64,90,.1); }
+.car.proper .cap { background: #fff; color: #5B4300; box-shadow: 0 .06em 0 var(--gold-press); }
+.bignote { display: block; margin-top: .3em; font-size: .88em; color: var(--ink-soft); }
 .car.look .car-body { animation: glow 1.1s ease-in-out infinite; }
 .car.look::after { background: var(--gold-press); }
 .car.wrong .car-body { background: linear-gradient(160deg, #FFF3F3, var(--bad-soft)); color: var(--bad-press); box-shadow: inset 2px 2px 0 #fff, inset 0 0 0 .05em var(--bad), 0 .09em 0 var(--bad-press), .1em .35em .6em rgba(229,72,77,.2); }

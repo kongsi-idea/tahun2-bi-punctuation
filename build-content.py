@@ -3,7 +3,7 @@
 import json, os
 H = os.path.dirname(os.path.abspath(__file__))
 pairs = json.load(open(os.path.join(H, 'content/pairs.json'), encoding='utf-8'))
-NAMES = ['Ali', 'Mei Ling']
+NAMES = ['Ali', 'Mei Ling', 'Siti']
 for p in pairs:
     assert p['tell'].endswith('.') and p['ask'].endswith('?'), p
     assert p['tell'][0].isupper() and p['ask'][0].isupper(), p
@@ -16,7 +16,7 @@ with open(os.path.join(H, 'js/bank.js'), 'w', encoding='utf-8') as f:
     f.write('window.BANK = ' + json.dumps({'names': NAMES, 'pairs': pairs}, ensure_ascii=False, indent=1) + ';\n')
 with open(os.path.join(H, 'content/sentences.md'), 'w', encoding='utf-8') as f:
     f.write('# 句子小火车 · 题库清单（请 Irene 老师过目）\n\n')
-    f.write(f'共 {len(pairs)} 对，{len(pairs)*2} 句。前 4 对是 Irene 老师给的真实错题；其余对照 DSKP 附录 Unit 6–9 主题补写（无 Superminds 课本，**请老师核对用词与难度**）。\n\n')
+    f.write(f'共 {len(pairs)} 对，{len(pairs)*2} 句。前 4 对是 Irene 老师给的真实错题；p18–p24 按 Irene 老师 10-10 的建议加（I 在句中、星期、国家）；其余对照 DSKP 附录 Unit 6–9 主题补写（无 Superminds 课本，**请老师核对用词与难度**）。\n\n')
     f.write('- 助动词类（aux）：陈述句与问句只差词序；个别换人称（I→you）或需加 do/does（has→does have）\n- 疑问词类（wh）：问句以 Where/What/Who 开头，配同主题陈述句\n\n')
     f.write('| # | 主题 | 类型 | Telling `.` | Asking `?` |\n|---|---|---|---|---|\n')
     for i, p in enumerate(pairs, 1):

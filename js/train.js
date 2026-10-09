@@ -4,18 +4,27 @@ window.Train = {
   // words: 要显示的词（已定好大小写）；opts.mark: 车尾标点（''＝空位）；opts.engine: 第一节是否火车头；opts.letters: 首字母做成可点按钮（第 2 关）
   build(words, opts = {}) {
     const root = U.el('div', 'train');
-    const cars = words.map((w, i) => {
-      const car = Train.car(w, opts.letters);
-      root.appendChild(car);
-      return car;
-    });
+    const cars = words.map(w => Train.car(w, opts.letters));
     const tail = U.el('div', 'car tail');
     tail.innerHTML = '<div class="car-body"><span class="mark"></span></div><i class="wheel"></i><i class="wheel"></i>';
-    root.appendChild(tail);
     const t = { root, cars, tail };
+    Train.layout(t, cars);
     Train.setMark(t, opts.mark || '');
     Train.setEngine(t, !!opts.engine);
     return t;
+  },
+  // 摆车厢：最后一节词车厢与车尾标点装进同一个不换行的组，标点不会单独掉到下一行
+  layout(t, ordered) {
+    const group = U.el('div', 'last-group');
+    group.append(ordered[ordered.length - 1], t.tail);
+    t.root.replaceChildren(...ordered.slice(0, -1), group);
+  },
+  // 句中的大写词（人名、星期、国家、I）整节车厢亮金色；第一节是火车头，不算
+  refreshProper(t) {
+    [...t.root.querySelectorAll('.car:not(.tail)')].forEach((c, i) => {
+      const txt = (c.querySelector('.w') || c.querySelector('.cap')).textContent;
+      c.classList.toggle('proper', i > 0 && txt[0] !== txt[0].toLowerCase());
+    });
   },
   car(text, letters) {
     const car = U.el('div', 'car');
@@ -58,16 +67,15 @@ window.Train = {
     async function play() {
       // 回到陈述句
       tw.forEach((w, i) => { t.cars[i].querySelector('.w').textContent = w; });
-      order.slice().sort((a, b) => a - b).forEach(i => t.root.insertBefore(t.cars[i], t.tail));
+      Train.layout(t, t.cars);
       t.cars.forEach(c => c.classList.remove('engine')); t.cars[0].classList.add('engine');
+      Train.refreshProper(t);
       Train.setMark(t, '.'); t.root.classList.remove('asking');
       await U.wait(U.reduced ? 100 : 900);
       const first = new Map(t.cars.map(c => [c, c.getBoundingClientRect()]));
-      order.forEach((i, k) => {
-        const c = t.cars[i];
-        c.querySelector('.w').textContent = aw[k];
-        t.root.insertBefore(c, t.tail);
-      });
+      order.forEach((i, k) => { t.cars[i].querySelector('.w').textContent = aw[k]; });
+      Train.layout(t, order.map(i => t.cars[i]));
+      Train.refreshProper(t);
       t.cars.forEach(c => c.classList.remove('engine'));
       t.cars[order[0]].classList.add('engine');
       Train.setMark(t, '?'); t.root.classList.add('asking');

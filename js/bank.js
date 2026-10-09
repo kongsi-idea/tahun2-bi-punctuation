@@ -2,7 +2,8 @@
 window.BANK = {
  "names": [
   "Ali",
-  "Mei Ling"
+  "Mei Ling",
+  "Siti"
  ],
  "pairs": [
   {
@@ -123,6 +124,55 @@ window.BANK = {
    "kind": "aux",
    "tell": "Monkeys can climb trees.",
    "ask": "Can monkeys climb trees?"
+  },
+  {
+   "id": "p18",
+   "topic": "days & I（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "My brother and I play football on Sundays.",
+   "ask": "Do you and your brother play football on Sundays?"
+  },
+  {
+   "id": "p19",
+   "topic": "days（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "I go swimming on Saturdays.",
+   "ask": "Do you go swimming on Saturdays?"
+  },
+  {
+   "id": "p20",
+   "topic": "days（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "On Fridays I ride my bike.",
+   "ask": "Do you ride your bike on Fridays?"
+  },
+  {
+   "id": "p21",
+   "topic": "days（Irene 老师建议）",
+   "kind": "wh",
+   "tell": "We have art on Tuesdays.",
+   "ask": "When do we have art?"
+  },
+  {
+   "id": "p22",
+   "topic": "countries（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "It is raining in Japan.",
+   "ask": "Is it raining in Japan?"
+  },
+  {
+   "id": "p23",
+   "topic": "countries（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "It is hot and sunny in Malaysia.",
+   "ask": "Is it hot and sunny in Malaysia?"
+  },
+  {
+   "id": "p24",
+   "topic": "days（Irene 老师建议）",
+   "kind": "aux",
+   "tell": "Siti and I are at school on Mondays.",
+   "ask": "Are you and Siti at school on Mondays?"
   }
  ]
 };

@@ -19,18 +19,20 @@
     }
     return best;
   }
-  function pickPairs(bank, n) {
-    // 每回合至少 1 对 wh、至少 2 对 aux，才两种线索都练到
-    const wh = U.shuffle(bank.pairs.filter(p => p.kind === 'wh'));
-    const aux = U.shuffle(bank.pairs.filter(p => p.kind === 'aux'));
-    const chosen = [wh[0], aux[0], aux[1]];
-    const rest = U.shuffle([...wh.slice(1), ...aux.slice(2)]);
-    while (chosen.length < n) chosen.push(rest.shift());
-    return chosen;
+  // 句中（第一个词之后）有大写：人名、星期、国家、I
+  const midCaps = sentence => U.words(sentence).slice(1).filter(w => w[0] !== w[0].toLowerCase());
+  const capsPair = p => midCaps(p.tell).length > 0 || midCaps(p.ask).length > 0;
+  // 每回合：至少 minCaps 对带句中大写、至少 1 对 wh、至少 2 对 aux，两种问句线索与大写规则都练到
+  function pickPairs(bank, n, minCaps) {
+    const chosen = U.shuffle(bank.pairs.filter(capsPair)).slice(0, minCaps);
+    const pool = U.shuffle(bank.pairs.filter(p => !chosen.includes(p)));
+    const take = (pred, need) => { while (chosen.filter(pred).length < need) { const k = pool.findIndex(pred); if (k < 0) break; chosen.push(pool.splice(k, 1)[0]); } };
+    take(p => p.kind === 'wh', 1); take(p => p.kind === 'aux', 2);
+    while (chosen.length < n) chosen.push(pool.shift());
+    return U.shuffle(chosen);
   }
   const lower = s => U.words(s).map(w => w.toLowerCase());
   const canDemo = p => p.kind === 'aux' && U.sortedKey(p.tell) === U.sortedKey(p.ask);
-  const quoted = ws => '“' + ws.join(' ') + '”';
 
   // ───────── 关 1 · Asking or Telling? ─────────
   const askTell = {
@@ -39,7 +41,7 @@
     blurb: 'Read the train. Is it asking, or telling?',
     count: 10,
     makeItems(bank) {
-      return mixed(pickPairs(bank, 5).flatMap(sentencesOf));
+      return mixed(pickPairs(bank, 5, 2).flatMap(sentencesOf));
     },
     voiceLines(bank) { return bank.pairs.flatMap(p => [p.tell, p.ask]); },
     mount(stage, dock, item, ctx) {
@@ -64,7 +66,7 @@
         dock.replaceChildren(); task.remove(); listen.remove();
         // 车头拿到大写、车尾接上标点：把句子写对
         U.words(item.sentence).forEach((w, i) => { t.cars[i].querySelector('.w').textContent = w; });
-        Train.setEngine(t, true);
+        Train.setEngine(t, true); Train.refreshProper(t);
         if (ok) {
           Sfx.good(); Train.setMark(t, item.answer); Sfx.couple(); Train.hop(t);
         } else {
@@ -86,15 +88,19 @@
       bTell.addEventListener('click', () => answer('.'));
     },
     explain(item, ok, pick) {
+      const caps = midCaps(item.sentence);
+      const note = caps.length ? ` <span class="bignote">Big letters in the middle: ${caps.map(w => '“' + w + '”').join(', ')}. Names, days, countries and “I” always start big.</span>` : '';
+      return askTell.explainCore(item, ok, pick) + note;
+    },
+    explainCore(item, ok, pick) {
       const p = item.pair, first = U.words(item.sentence)[0];
       if (item.answer === '?') {
         if (p.kind === 'wh') return `“${first}” at the start is a question word. This train is <b class="ask">asking</b>.`;
         return `It starts with “${first}”. A helper word at the front means <b class="ask">asking</b>.` +
-          (canDemo(p) ? ` Telling goes the other way: ${quoted(lower(p.tell).slice(0, 2))}.` : '');
+          (canDemo(p) ? ' Telling goes the other way: the helper word comes after who or what.' : '');
       }
-      const tellStart = lower(p.tell).slice(0, 2);
       return `This one is <b class="tell">telling</b> us something.` +
-        (canDemo(p) ? ` We say ${quoted(tellStart)}. To ask, the words swap: ${quoted(lower(p.ask).slice(0, 2))}.` : ' It does not start with a question word.');
+        (canDemo(p) ? ` To ask, the helper word “${lower(p.ask)[0]}” would jump to the front.` : ' It does not start with a question word.');
     },
     reviewRow(item) {
       return `<span class="rv-s">${item.sentence}</span><span class="rv-note">${item.answer === '?' ? 'asking' : 'telling'}</span>`;
@@ -108,7 +114,7 @@
     blurb: 'Make big letters for the engine, names and “I”. Then pick the last car.',
     count: 6,
     makeItems(bank) {
-      return mixed(pickPairs(bank, 3).flatMap(sentencesOf));
+      return mixed(pickPairs(bank, 3, 2).flatMap(sentencesOf));
     },
     voiceLines(bank) { return bank.pairs.flatMap(p => [p.tell, p.ask]); },
     mount(stage, dock, item, ctx) {
@@ -128,6 +134,7 @@
           const cap = c.querySelector('.cap'), w = target[i].toLowerCase();
           cap.textContent = caps[i] ? w[0].toUpperCase() : w[0];
           c.classList.toggle('is-big', caps[i]);
+          c.classList.toggle('proper', caps[i] && i > 0);
         });
         Train.setEngine(t, caps[0]);
         Train.setMark(t, mark);
@@ -166,7 +173,7 @@
           msg.classList.add('bad');
           const tips = [];
           if (badCars[0]) tips.push('The first word needs a big letter.');
-          if (badCars.slice(1).some(Boolean)) tips.push('Names and “I” have big letters. Other words stay small.');
+          if (badCars.slice(1).some(Boolean)) tips.push('Names, days, countries and “I” have big letters. Other words stay small.');
           if (badTail) tips.push('Read it. Is it asking or telling?');
           msg.innerHTML = `<div class="badge">!</div><div class="fb-text"><b>${nBad} red ${nBad === 1 ? 'car' : 'cars'}.</b> ${tips.join(' ')}</div>`;
         }

@@ -12,6 +12,11 @@ def check(name, ok, extra=''):
     print(('  ✅ ' if ok else '  ❌ ') + name + (f' — {extra}' if extra else ''))
     if not ok: fails += 1
 
+def tail_attached(pg):
+    # 车尾标点不能单独在新的一行：它和前一节车厢同一行
+    return pg.evaluate('''() => { const t = document.querySelector('.stage .train > .last-group'); if (!t) return false;
+      const cars = t.querySelectorAll('.car'); return cars.length === 2 && Math.abs(cars[0].getBoundingClientRect().top - cars[1].getBoundingClientRect().top) < 2; }''')
+
 def run(p, w, h, tag):
     errs = []
     br = p.chromium.launch(); pg = br.new_page(viewport={'width': w, 'height': h})
@@ -34,7 +39,12 @@ def run(p, w, h, tag):
             check(f'[{tag}/{mode}] L1 第{k+1}题以全小写、无标点出现', pg.locator('.stage .car .w').all_inner_texts() == [w.lower() for w in it['sentence'].rstrip('.?').split(' ')])
             right = k < 5
             pick = it['answer'] if right else ('?' if it['answer'] == '.' else '.')
+            check(f'[{tag}/{mode}] L1 第{k+1}题车尾与最后一个词同一行', tail_attached(pg))
             pg.click('.btn.ask' if pick == '?' else '.btn.tell'); pg.wait_for_timeout(1200 if not right else 400)
+            mid = [x for x in it['sentence'].rstrip('.?').split(' ')[1:] if x[0].isupper()]
+            check(f'[{tag}/{mode}] L1 第{k+1}题句中大写词 {mid} 全部亮起', pg.locator('.stage > .train .car.proper').count() == len(mid))
+            if not right and pg.locator('.demo').count():
+                check(f'[{tag}/{mode}] L1 演示车尾同行', pg.evaluate('''() => { const g = document.querySelector('.demo .last-group'); const c = g.querySelectorAll('.car'); return Math.abs(c[0].getBoundingClientRect().top - c[1].getBoundingClientRect().top) < 2; }'''))
             fb = pg.locator('.feedback').first
             check(f'[{tag}/{mode}] L1 第{k+1}题回馈 {"Yes" if right else "Not quite"}', ('Yes!' if right else 'Not quite') in fb.inner_text())
             if k == 5: pg.screenshot(path=f'{OUT}/{tag}-{mode}-l1-wrong.png')
@@ -55,6 +65,7 @@ def run(p, w, h, tag):
             it = pg.evaluate('__train.engine.S.current')
             target = it['sentence']; ws = target.rstrip('.?').split(' ')
             if k == 0: pg.screenshot(path=f'{OUT}/{tag}-{mode}-l2-start.png')
+            check(f'[{tag}/{mode}] L2 第{k+1}题车尾与最后一个词同一行', tail_attached(pg))
             # 先故意不做就检查 → 必须有红车厢，且不会过关
             pg.click('.btn.go'); pg.wait_for_timeout(250)
             check(f'[{tag}/{mode}] L2 第{k+1}题没做就检查：不过关', pg.locator('.btn.next').count() == 0 and pg.locator('.car.wrong').count() >= 1)
@@ -63,6 +74,8 @@ def run(p, w, h, tag):
                 if w[0].isupper(): pg.locator('.stage .car .cap').nth(i).click()
             for _ in range(1 if it['answer'] == '.' else 2): pg.click('.car.tail')
             pg.click('.btn.go'); pg.wait_for_timeout(300)
+            nmid = len([x for x in ws[1:] if x[0].isupper()])
+            check(f'[{tag}/{mode}] L2 第{k+1}题句中大写词亮起 {nmid}', pg.locator('.stage .car.proper').count() == nmid)
             check(f'[{tag}/{mode}] L2 第{k+1}题修好过关（{target}）', pg.locator('.btn.next').count() == 1 and 'All aboard' in pg.locator('.feedback').inner_text())
             if k == 0: pg.screenshot(path=f'{OUT}/{tag}-{mode}-l2-done.png')
             pg.click('.btn.next'); pg.wait_for_timeout(150)

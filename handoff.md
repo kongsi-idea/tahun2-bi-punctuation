@@ -22,4 +22,4 @@
 - 部分句对不是纯换词序（I→you、has→does have、wh 问句配同主题陈述句），清单里已标 aux／wh
 
 ## 🕐 最后更新
-2026-10-10
+2026-10-10 · Claude Sonnet 5.5 · Git ✅ 已推（决定已写进 agents.md）

@@ -136,15 +136,15 @@
   "id": "p20",
   "topic": "days（Irene 老师建议）",
   "kind": "aux",
-  "tell": "On Fridays I ride my bike.",
+  "tell": "On Fridays, I ride my bike.",
   "ask": "Do you ride your bike on Fridays?"
  },
  {
   "id": "p21",
   "topic": "days（Irene 老师建议）",
   "kind": "wh",
-  "tell": "We have art on Tuesdays.",
-  "ask": "When do we have art?"
+  "tell": "We have Art on Tuesdays.",
+  "ask": "When do we have Art?"
  },
  {
   "id": "p22",

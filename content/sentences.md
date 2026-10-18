@@ -26,8 +26,8 @@
 | 17 | habitats | aux | Monkeys can climb trees. | Can monkeys climb trees? |
 | 18 | days & I（Irene 老师建议） | aux | My brother and I play football on Sundays. | Do you and your brother play football on Sundays? |
 | 19 | days（Irene 老师建议） | aux | I go swimming on Saturdays. | Do you go swimming on Saturdays? |
-| 20 | days（Irene 老师建议） | aux | On Fridays I ride my bike. | Do you ride your bike on Fridays? |
-| 21 | days（Irene 老师建议） | wh | We have art on Tuesdays. | When do we have art? |
+| 20 | days（Irene 老师建议） | aux | On Fridays, I ride my bike. | Do you ride your bike on Fridays? |
+| 21 | days（Irene 老师建议） | wh | We have Art on Tuesdays. | When do we have Art? |
 | 22 | countries（Irene 老师建议） | aux | It is raining in Japan. | Is it raining in Japan? |
 | 23 | countries（Irene 老师建议） | aux | It is hot and sunny in Malaysia. | Is it hot and sunny in Malaysia? |
 | 24 | days（Irene 老师建议） | aux | Siti and I are at school on Mondays. | Are you and Siti at school on Mondays? |

@@ -89,7 +89,7 @@
     },
     explain(item, ok, pick) {
       const caps = midCaps(item.sentence);
-      const note = caps.length ? ` <span class="bignote">Big letters in the middle: ${caps.map(w => '“' + w + '”').join(', ')}. Names, days, countries and “I” always start big.</span>` : '';
+      const note = caps.length ? ` <span class="bignote">Big letters in the middle: ${caps.map(w => '“' + w.replace(/,$/, '') + '”').join(', ')}. Names, days, countries, school subjects and “I” always start big.</span>` : '';
       return askTell.explainCore(item, ok, pick) + note;
     },
     explainCore(item, ok, pick) {
@@ -173,7 +173,7 @@
           msg.classList.add('bad');
           const tips = [];
           if (badCars[0]) tips.push('The first word needs a big letter.');
-          if (badCars.slice(1).some(Boolean)) tips.push('Names, days, countries and “I” have big letters. Other words stay small.');
+          if (badCars.slice(1).some(Boolean)) tips.push('Names, days, countries, school subjects and “I” have big letters. Other words stay small.');
           if (badTail) tips.push('Read it. Is it asking or telling?');
           msg.innerHTML = `<div class="badge">!</div><div class="fb-text"><b>${nBad} red ${nBad === 1 ? 'car' : 'cars'}.</b> ${tips.join(' ')}</div>`;
         }

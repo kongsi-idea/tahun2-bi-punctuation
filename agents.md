@@ -7,6 +7,7 @@ Tahun 2 英文标点／大写练习，Teacher Irene Wong 的点子（点子铺�
 - **句对不一定纯换词序**：I→you、has→does have、wh 问句配同主题陈述句；只有「词集合相同」的 aux 对才做车厢换位演示（`Train.demo`）。
 - **避免全大写词（如 PE）**：第 2 关只能切换首字母，`PE` 无法判对，已改成 `Art`（10-18 Irene 老师：科目名大写，提示语加了 school subjects）。
 - **不用 `It's` 缩写**：Irene 老师例句原是 `It's raining…`，改成 `It is…`，因为换位演示按整词拆；如要保留缩写需先改演示逻辑。
+- **句中逗号贴在词上（`Fridays,`），不另做车厢**：车尾那节只管 `.`／`?`，本工具不考逗号；10-18 Ming Zhu 老师指出 On Fridays 后应有逗号，按此补。
 - **标点车厢必须与最后一个词同行**（`.last-group`）；句中大写词（人名、星期、国家、I）整节亮金色（`Train.refreshProper`）。老师 10-10 反馈，别改回平铺。
 - **每回合保证 ≥2 对带句中大写**、≥1 对 wh、≥2 对 aux（`pickPairs`）。
 - **没有火车头插画**：车厢全 CSS；`draw` 的 OpenAI key 额度 10-09 用完。补额度前不要用 CSS／SVG 拼角色。
